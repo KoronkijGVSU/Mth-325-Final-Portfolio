@@ -1,5 +1,33 @@
 from collections import deque
 
+
+def check_source_sink(graph, source, sink):
+    """
+    Checks to make sure that the given source has in-degree 0 and the given sink has out-degree 0.
+
+    Args:
+        graph: The adjacency matrix of the graph.
+        source: The source node.
+        sink: The sink node.
+
+    Returns:
+        bool: True if both conditions are met, False otherwise.
+    """
+    # Check in-degree of the source
+    for row in graph:
+        if row[source] > 0:
+            print(f"Error: Source node {source} has a non-zero in-degree.")
+            return False
+
+    # Check out-degree of the sink
+    for capacity in graph[sink]:
+        if capacity > 0:
+            print(f"Error: Sink node {sink} has a non-zero out-degree.")
+            return False
+
+    return True
+
+
 def bfs_capacity(residual_graph, source, sink, parent):
     """
     Perform BFS to find an augmenting path in the residual graph.
@@ -29,6 +57,7 @@ def bfs_capacity(residual_graph, source, sink, parent):
                     return True
     return False
 
+
 def ford_fulkerson(graph, source, sink):
     """
     Implements the Ford-Fulkerson algorithm to find the maximum flow in a network.
@@ -41,6 +70,11 @@ def ford_fulkerson(graph, source, sink):
     Returns:
         int: The maximum flow from source to sink.
     """
+
+    # Check to make sure source and sink are valid, with proper in and out degrees
+    if not check_source_sink(graph, source, sink):
+        return
+
     # Create a residual graph and initialize it with the capacities of the original graph
     residual_graph = [row[:] for row in graph]
     parent = [-1] * len(graph)  # To store the path
